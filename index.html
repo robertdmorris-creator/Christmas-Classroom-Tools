@@ -192,15 +192,22 @@
 
             const syncFullscreenState = () => {
                 const isFullscreenNow = document.fullscreenElement || document.webkitFullscreenElement || appContainer.classList.contains('viewport-fullscreen');
+                
                 if (isFullscreenNow) {
                     fullscreenBtn.classList.add('is-fullscreen');
+                    // Add Christmas background if missing (Native fullscreen strips body styles)
                     if (!appContainer.classList.contains('bg-gradient-to-br')) {
                         appContainer.classList.add('bg-gradient-to-br', 'from-red-900', 'via-green-900', 'to-slate-900');
                     }
+                    // FIX: Explicitly allow scrolling on the container when in fullscreen
+                    // This is the failsafe that ensures content is reachable
+                    appContainer.classList.add('overflow-y-auto');
                 } else {
                     fullscreenBtn.classList.remove('is-fullscreen');
                     appContainer.classList.remove('viewport-fullscreen');
+                    // Remove fullscreen-specific overrides
                     appContainer.classList.remove('bg-gradient-to-br', 'from-red-900', 'via-green-900', 'to-slate-900');
+                    appContainer.classList.remove('overflow-y-auto');
                 }
             };
             document.addEventListener('fullscreenchange', syncFullscreenState);
